@@ -21,22 +21,21 @@ public class Camera
 
         if(KeyInput.GetKey('W'))
         {
-            position.z -= 0.002f;
-            if(position.z <= 0.025f)
-                position.z = (float) Math.max(position.z, 0.025);
+            position.z -= 0.02f;
+
         }
         if(KeyInput.GetKey('S'))
         {
-            position.z += 0.002f;
+            position.z += 0.02f;
 
         }
         if(KeyInput.GetKey('D'))
         {
-            position.x += 0.002f;
+            position.x += 0.02f;
         }
         if(KeyInput.GetKey('A'))
         {
-            position.x -= 0.002f;
+            position.x -= 0.02f;
         }
     }
 

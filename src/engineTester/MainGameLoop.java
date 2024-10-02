@@ -2,6 +2,7 @@ package engineTester;
 
 import entities.Camera;
 import entities.Entity;
+import entities.Light;
 import input.KeyInput;
 import models.TexturedModel;
 import org.joml.Vector3f;
@@ -27,22 +28,24 @@ public class MainGameLoop
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
 
-        RawModel model = OBJLoader.loadObjModel("stall", loader);
-        ModelTexture texture = new ModelTexture(loader.loadTexture("stallTexture"));
+        RawModel model = OBJLoader.loadObjModel("dragon", loader);
+        ModelTexture texture = new ModelTexture(loader.loadTexture("white"));
         TexturedModel staticModel = new TexturedModel(model, texture);
 
         Entity entity = new Entity(staticModel,new Vector3f(0, 0, -50), 0, 0, 0, 1);
+        Light light = new Light(new Vector3f(0,0, -20), new Vector3f(1,1,1));
 
         Camera camera = new Camera();
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             KeyInput.Reset();
             glfwPollEvents();
-            entity.increaseRotation(0,0.01f,0);
+            entity.increaseRotation(0,0.03f,0);
             camera.move();
 
             renderer.prepare();
             shader.start();
+            shader.loadLight(light);
             shader.loadViewMatrix(camera);
 
             renderer.render(entity, shader);

@@ -44,6 +44,7 @@ public class Renderer
         glBindVertexArray(model.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
         Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(),
                                         entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
@@ -52,6 +53,7 @@ public class Renderer
         glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
     }
 

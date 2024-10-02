@@ -5,6 +5,7 @@ import models.RawModel;
 import models.TexturedModel;
 import org.joml.Matrix4f;
 import shaders.StaticShader;
+import textures.ModelTexture;
 import toolbox.Maths;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -39,18 +40,20 @@ public class Renderer
 
     public void render(Entity entity, StaticShader shader)
     {
-        TexturedModel texturedModel = entity.getModel();
-        RawModel model = texturedModel.getRawModel();
-        glBindVertexArray(model.getVaoID());
+        TexturedModel model = entity.getModel();
+        RawModel rawModel = model.getRawModel();
+        glBindVertexArray(rawModel.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
         Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(),
                                         entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
+        ModelTexture texture = model.getTexture();
+        shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getID());
-        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glBindTexture(GL_TEXTURE_2D, model.getTexture().getID());
+        glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);

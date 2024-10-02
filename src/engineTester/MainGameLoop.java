@@ -22,13 +22,16 @@ public class MainGameLoop
         float[] vertices = {
                 -0.5f, 0.5f, 0f,
                 -0.5f, -0.5f, 0f,
-                0.5f, -0.5f, 0f,
-                0.5f, -0.5f, 0f,
-                0.5f, 0.5f, 0f,
-                -0.5f, 0.5f, 0f
+                 0.5f, -0.5f, 0f,
+                 0.5f, 0.5f, 0f
         };
 
-        RawModel model = loader.loadToVao(vertices);
+        int[] indices = {
+                0,1,3,
+                3,1,2
+        };
+
+        RawModel model = loader.loadToVao(vertices, indices);
 
 
         while (!glfwWindowShouldClose(glfwWindow)) {

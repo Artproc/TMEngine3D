@@ -1,5 +1,6 @@
 package renderEngine;
 
+import models.RawModel;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -16,14 +17,24 @@ public class Loader
 {
     private List<Integer> vaos = new ArrayList<>();
     private List<Integer> vbos = new ArrayList<>();
+    private List<Integer> textures = new ArrayList<>();
 
-    public RawModel loadToVao(float[] position, int[] indices)
+    public RawModel loadToVao(float[] position,float[] textureCoords, int[] indices)
     {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, position);
+        storeDataInAttributeList(1, 2, textureCoords);
         unbind();
         return new RawModel(vaoID, indices.length);
+    }
+
+    public int loadTexture(String fileName)
+    {
+        Texture texture = new Texture();
+        texture.init("res/models/" + fileName + ".png");
+        textures.add(texture.getTexId());
+        return texture.getTexId();
     }
 
     private int createVAO()
@@ -84,7 +95,10 @@ public class Loader
         for(int vbo : vbos) {
             glDeleteBuffers(vbo);
         }
+        for(int tex : textures)
+            glDeleteTextures(tex);
         vaos.clear();
         vbos.clear();
+        textures.clear();
     }
 }

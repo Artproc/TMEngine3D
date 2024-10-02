@@ -1,11 +1,13 @@
 package engineTester;
 
 import input.KeyInput;
+import models.TexturedModel;
 import renderEngine.Application;
 import renderEngine.Loader;
-import renderEngine.RawModel;
+import models.RawModel;
 import renderEngine.Renderer;
 import shaders.StaticShader;
+import textures.ModelTexture;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -33,8 +35,16 @@ public class MainGameLoop
                 3,1,2
         };
 
-        RawModel model = loader.loadToVao(vertices, indices);
+        float[] textureCoords = {
+                0,0,
+                0,1,
+                1,1,
+                1,0
+        };
 
+        RawModel model = loader.loadToVao(vertices, textureCoords, indices);
+        ModelTexture texture = new ModelTexture(loader.loadTexture("alien"));
+        TexturedModel texturedModel = new TexturedModel(model, texture);
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             KeyInput.Reset();
@@ -43,7 +53,7 @@ public class MainGameLoop
             renderer.prepare();
             shader.start();
 
-            renderer.render(model);
+            renderer.render(texturedModel);
 
             shader.stop();
 

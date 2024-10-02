@@ -5,6 +5,7 @@ import renderEngine.Application;
 import renderEngine.Loader;
 import renderEngine.RawModel;
 import renderEngine.Renderer;
+import shaders.StaticShader;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -18,6 +19,7 @@ public class MainGameLoop
 
         Loader loader = new Loader();
         Renderer renderer = new Renderer();
+        StaticShader shader = new StaticShader();
 
         float[] vertices = {
                 -0.5f, 0.5f, 0f,
@@ -39,12 +41,16 @@ public class MainGameLoop
             glfwPollEvents();
 
             renderer.prepare();
+            shader.start();
 
             renderer.render(model);
 
+            shader.stop();
+
             glfwSwapBuffers(glfwWindow);
         }
-//        loader.cleanUp();
+        shader.cleanUp();
+        loader.cleanUp();
         glfwTerminate();
     }
 }

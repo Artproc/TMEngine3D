@@ -1,5 +1,6 @@
 package toolbox;
 
+import entities.Camera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -12,18 +13,18 @@ public class Maths
         matrix.identity().translate(translation)
                 .rotateX((float) Math.toRadians(rx))
                 .rotateY((float) Math.toRadians(ry))
-                .rotateZ((float)Math.toRadians(rz))
+                .rotateZ((float) Math.toRadians(rz))
                 .scale(scale);
         return matrix;
     }
 
-//    public static Matrix4f createViewMatrix(Camera camera) {
-//        Matrix4f viewMatrix = new Matrix4f();
-//        viewMatrix.rotateX((float) Math.toRadians(camera.getPitch()));
-//        viewMatrix.rotateY((float) Math.toRadians(camera.getYaw()));
-//        Vector3f negativePosition = new Vector3f(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
-//        viewMatrix.translate(negativePosition);
-//        return viewMatrix;
-//    }
+    public static Matrix4f createViewMatrix(Camera camera) {
+        Matrix4f viewMatrix = new Matrix4f();
+        viewMatrix.rotateX((float) Math.toRadians(camera.getPitch()));
+        viewMatrix.rotateY((float) Math.toRadians(camera.getYaw()));
+        Vector3f negativePosition = new Vector3f(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
+        viewMatrix.translate(negativePosition);
+        return viewMatrix;
+    }
 
 }

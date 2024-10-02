@@ -1,5 +1,6 @@
 package renderEngine;
 
+import input.KeyInput;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -28,7 +29,7 @@ public class Application
         glfwShowWindow(window);
         glfwMakeContextCurrent(window);
 
-       // glfwSetKeyCallback(window, new KeyInput());
+        glfwSetKeyCallback(window, new KeyInput());
 
         //Create capabilities and set the background color
         GL.createCapabilities();

@@ -6,11 +6,8 @@ import entities.Light;
 import input.KeyInput;
 import models.TexturedModel;
 import org.joml.Vector3f;
-import renderEngine.Application;
-import renderEngine.Loader;
+import renderEngine.*;
 import models.RawModel;
-import renderEngine.OBJLoader;
-import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
 
@@ -25,8 +22,7 @@ public class MainGameLoop
         long glfwWindow = Application.Init();
 
         Loader loader = new Loader();
-        StaticShader shader = new StaticShader();
-        Renderer renderer = new Renderer(shader);
+
 
         RawModel model = OBJLoader.loadObjModel("dragon", loader);
 
@@ -36,9 +32,11 @@ public class MainGameLoop
         texture.setReflectivity(1);
 
         Entity entity = new Entity(staticModel,new Vector3f(0, -5, -25), 0, 0, 0, 1);
-        Light light = new Light(new Vector3f(200,200, 100), new Vector3f(1,1,1));
+        Light light = new Light(new Vector3f(3000,2000, 3000), new Vector3f(1,1,1));
 
         Camera camera = new Camera();
+
+        MasterRenderer renderer = new MasterRenderer();
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             KeyInput.Reset();
@@ -46,18 +44,12 @@ public class MainGameLoop
             entity.increaseRotation(0,0.03f,0);
             camera.move();
 
-            renderer.prepare();
-            shader.start();
-            shader.loadLight(light);
-            shader.loadViewMatrix(camera);
-
-            renderer.render(entity, shader);
-
-            shader.stop();
+            renderer.processEntity(entity);
+            renderer.render(light, camera);
 
             glfwSwapBuffers(glfwWindow);
         }
-        shader.cleanUp();
+        renderer.cleanUp();
         loader.cleanUp();
         glfwTerminate();
     }

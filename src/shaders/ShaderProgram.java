@@ -64,6 +64,11 @@ public abstract class ShaderProgram
         glBindAttribLocation(programID, attribute, variableName);
     }
 
+    protected void loadInt(int location, int value)
+    {
+        glUniform1i(location, value);
+    }
+
     protected void loadFloat(int location, float value)
     {
         glUniform1f(location, value);

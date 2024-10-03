@@ -32,6 +32,7 @@ public class Loader
 
     public int loadTexture(String fileName)
     {
+
         Texture texture = new Texture();
         texture.init("res/models/" + fileName + ".png");
         textures.add(texture.getTexId());

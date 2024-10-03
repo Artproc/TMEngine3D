@@ -3,6 +3,7 @@ package engineTester;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
+import entities.Player;
 import input.KeyInput;
 import models.RawModel;
 import models.TexturedModel;
@@ -24,6 +25,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class MainGameLoop
 {
+        private static long lastFrameTime;
+        private static float delta;
 
 
     public static void main(String[] args)
@@ -92,11 +95,19 @@ public class MainGameLoop
         Camera camera = new Camera();
         MasterRenderer renderer = new MasterRenderer();
 
+        RawModel bunnyModel = OBJLoader.loadObjModel("bunny", loader);
+        TexturedModel bunny = new TexturedModel(bunnyModel, new ModelTexture(loader.loadTexture("white")));
+
+        Player player = new Player(bunny, new Vector3f(100,0,-50),0,0,0,1);
+
+        lastFrameTime = System.currentTimeMillis();
         while (!glfwWindowShouldClose(glfwWindow)) {
             KeyInput.Reset();
             glfwPollEvents();
             camera.move();
+            player.move();
 
+            renderer.processEntity(player);
             renderer.processTerrain(terrain);
             renderer.processTerrain(terrain2);
             for (Entity entity : entities) {
@@ -106,9 +117,16 @@ public class MainGameLoop
             renderer.render(light, camera);
 
             glfwSwapBuffers(glfwWindow);
+            long currentFrameTime = System.currentTimeMillis();
+            delta = (currentFrameTime - lastFrameTime)/1000f;
+            lastFrameTime = currentFrameTime;
         }
         renderer.cleanUp();
         loader.cleanUp();
         glfwTerminate();
+    }
+    public static float getFrameTimeSeconds()
+    {
+        return delta;
     }
 }

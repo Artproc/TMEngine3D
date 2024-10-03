@@ -42,4 +42,6 @@ public class Application
     public static long getWindow(){return window;}
     public static float getWidth(){return WIDTH;}
     public static float getHeight(){return HEIGHT;}
+
+
 }

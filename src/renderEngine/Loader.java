@@ -35,6 +35,9 @@ public class Loader
 
         Texture texture = new Texture();
         texture.init("res/models/" + fileName + ".png");
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS,-0.4f );
         textures.add(texture.getTexId());
         return texture.getTexId();
     }

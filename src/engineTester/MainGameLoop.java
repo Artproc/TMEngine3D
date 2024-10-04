@@ -5,6 +5,7 @@ import entities.Entity;
 import entities.Light;
 import entities.Player;
 import input.KeyInput;
+import input.MouseListener;
 import models.RawModel;
 import models.TexturedModel;
 import org.joml.Vector3f;
@@ -92,13 +93,14 @@ public class MainGameLoop
         Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap);
         Terrain terrain2 = new Terrain(-1, -1, loader, texturePack, blendMap);
 
-        Camera camera = new Camera();
+
         MasterRenderer renderer = new MasterRenderer();
 
-        RawModel bunnyModel = OBJLoader.loadObjModel("bunny", loader);
-        TexturedModel bunny = new TexturedModel(bunnyModel, new ModelTexture(loader.loadTexture("white")));
+        RawModel bunnyModel = OBJLoader.loadObjModel("person", loader);
+        TexturedModel bunny = new TexturedModel(bunnyModel, new ModelTexture(loader.loadTexture("playerTexture")));
 
         Player player = new Player(bunny, new Vector3f(100,0,-50),0,0,0,1);
+        Camera camera = new Camera(player);
 
         lastFrameTime = System.currentTimeMillis();
         while (!glfwWindowShouldClose(glfwWindow)) {
@@ -117,6 +119,7 @@ public class MainGameLoop
             renderer.render(light, camera);
 
             glfwSwapBuffers(glfwWindow);
+            MouseListener.endFrame();
             long currentFrameTime = System.currentTimeMillis();
             delta = (currentFrameTime - lastFrameTime)/1000f;
             lastFrameTime = currentFrameTime;

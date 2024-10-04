@@ -1,7 +1,9 @@
 package renderEngine;
 
 import input.KeyInput;
+import input.MouseListener;
 import org.lwjgl.opengl.GL;
+
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClearColor;
@@ -30,6 +32,9 @@ public class Application
         glfwMakeContextCurrent(window);
 
         glfwSetKeyCallback(window, new KeyInput());
+        glfwSetMouseButtonCallback(window, MouseListener::mouseButtonCallback);
+        glfwSetCursorPosCallback(window, MouseListener::mousePosCallback);
+        glfwSetScrollCallback(window, MouseListener::mouseScrollCallback);
 
         //Create capabilities and set the background color
         GL.createCapabilities();

@@ -4,6 +4,7 @@ import entities.Camera;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 public class Maths
 {
@@ -13,6 +14,14 @@ public class Maths
         float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
         float l3 = 1.0f - l1 - l2;
         return l1 * p1.y + l2 * p2.y + l3 * p3.y;
+    }
+
+    public static Matrix4f createTransformationMatrix(Vector2f translation, Vector2f scale) {
+        Matrix4f matrix = new Matrix4f();
+        matrix.identity().translate(translation.x, translation.y, 0)
+                .scale(new Vector3f(scale.x, scale.y, 1f));
+
+        return matrix;
     }
 
 

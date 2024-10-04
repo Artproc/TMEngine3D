@@ -4,10 +4,13 @@ import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import entities.Player;
+import guis.GuiRenderer;
+import guis.GuiTexture;
 import input.KeyInput;
 import input.MouseListener;
 import models.RawModel;
 import models.TexturedModel;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import renderEngine.Application;
 import renderEngine.Loader;
@@ -55,8 +58,11 @@ public class MainGameLoop
                 new ModelTexture(loader.loadTexture("grassTexture")));
         TexturedModel flower = new TexturedModel(OBJLoader.loadObjModel("grassModel", loader),
                 new ModelTexture(loader.loadTexture("flower")));
-        TexturedModel fern = new TexturedModel(OBJLoader.loadObjModel("fern", loader),
-                new ModelTexture(loader.loadTexture("fern")));
+
+        ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("fern"));
+        fernTextureAtlas.setNumberOfRows(2);
+        TexturedModel fern = new TexturedModel(OBJLoader.loadObjModel("fern", loader),fernTextureAtlas);
+
         TexturedModel bobble = new TexturedModel(OBJLoader.loadObjModel("lowPolyTree", loader),
                 new ModelTexture(loader.loadTexture("lowPolyTree")));
         TexturedModel box = new TexturedModel(OBJLoader.loadObjModel("box", loader),
@@ -74,11 +80,11 @@ public class MainGameLoop
         Random random = new Random();
         for (int i = 0; i < 400; i++)
         {
-            if(i % 20 == 0) {
+            if(i % 10 == 0) {
                 float x = random.nextFloat() * 800 - 400;
                 float z = random.nextFloat() * -600;
                 float y = terrain.getHeightOfTerrain(x, z);
-                entities.add(new Entity(fern, new Vector3f(x, y,z), 0, random.nextFloat() * 360,
+                entities.add(new Entity(fern, random.nextInt(4),new Vector3f(x, y,z), 0, random.nextFloat() * 360,
                         0, 0.9f));
             }
             if(i% 5 == 0){
@@ -110,6 +116,14 @@ public class MainGameLoop
         Player player = new Player(bunny, new Vector3f(100,5,-150),0,180,0,0.6f);
         Camera camera = new Camera(player);
 
+        List<GuiTexture> guis = new ArrayList<>();
+        GuiTexture gui = new GuiTexture(loader.loadTexture("socuwan"), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+        guis.add(gui);
+        GuiTexture gui2 = new GuiTexture(loader.loadTexture("thinmatrix"), new Vector2f(0.3f, 0.74f), new Vector2f(0.4f, 0.4f));
+        guis.add(gui2);
+
+        GuiRenderer guiRenderer = new GuiRenderer(loader);
+
         lastFrameTime = System.currentTimeMillis();
         while (!glfwWindowShouldClose(glfwWindow)) {
             KeyInput.Reset();
@@ -125,6 +139,7 @@ public class MainGameLoop
             }
 
             renderer.render(light, camera);
+            guiRenderer.render(guis);
 
             glfwSwapBuffers(glfwWindow);
             MouseListener.endFrame();
@@ -132,6 +147,7 @@ public class MainGameLoop
             delta = (currentFrameTime - lastFrameTime)/1000f;
             lastFrameTime = currentFrameTime;
         }
+        guiRenderer.cleanup();
         renderer.cleanUp();
         loader.cleanUp();
         glfwTerminate();

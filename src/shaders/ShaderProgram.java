@@ -1,6 +1,7 @@
 package shaders;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
@@ -72,6 +73,11 @@ public abstract class ShaderProgram
     protected void loadFloat(int location, float value)
     {
         glUniform1f(location, value);
+    }
+
+    protected void loadVector2f(int location, Vector2f vec)
+    {
+        glUniform2f(location, vec.x(), vec.y());
     }
 
     protected void loadVector3f(int location, Vector3f vec)

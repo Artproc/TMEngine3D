@@ -3,6 +3,7 @@ package shaders;
 import entities.Camera;
 import entities.Light;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import toolbox.Maths;
 
@@ -20,6 +21,8 @@ public class StaticShader extends ShaderProgram
     private int location_reflectivity;
     private int location_useFakeLighting;
     private int location_skyColour;
+    private int location_numberOfRows;
+    private int location_offset;
 
 
 
@@ -46,6 +49,18 @@ public class StaticShader extends ShaderProgram
         location_reflectivity = super.getUniformLocation("reflectivity");
         location_useFakeLighting = super.getUniformLocation("useFakeLighting");
         location_skyColour = super.getUniformLocation("skyColour");
+        location_numberOfRows = super.getUniformLocation("numberOfRows");
+        location_offset = super.getUniformLocation("offset");
+    }
+
+    public void loadNumberOfRows(int numberOfRows )
+    {
+        loadFloat(location_numberOfRows, numberOfRows);
+    }
+
+    public void loadOffset(float x, float y)
+    {
+        loadVector2f(location_offset, new Vector2f(x, y));
     }
 
     public void loadSkyColour(float r, float g, float b)

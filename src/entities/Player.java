@@ -4,6 +4,7 @@ import engineTester.MainGameLoop;
 import input.KeyInput;
 import models.TexturedModel;
 import org.joml.Vector3f;
+import terrains.Terrain;
 
 import java.awt.event.KeyEvent;
 
@@ -27,7 +28,7 @@ public class Player extends Entity
         super(model, position, rotX, rotY, rotZ, scale);
     }
 
-    public void move()
+    public void move(Terrain terrain)
     {
         checkInputs();
         increaseRotation(0, currentTurnSpeed * MainGameLoop.getFrameTimeSeconds(), 0);
@@ -37,10 +38,11 @@ public class Player extends Entity
         increasePosition(dx,0,dz);
         upwardsSpeed += GRAVITY * MainGameLoop.getFrameTimeSeconds();
         increasePosition(0, upwardsSpeed * MainGameLoop.getFrameTimeSeconds(),0);
-        if(getPosition().y < TERRAIN_HEIGHT)
+        float terrainHeight = terrain.getHeightOfTerrain(getPosition().x, getPosition().z);
+        if(getPosition().y < terrainHeight)
         {
             upwardsSpeed = 0;
-            getPosition().y = TERRAIN_HEIGHT;
+            getPosition().y = terrainHeight;
             isInAir = false;
         }
     }

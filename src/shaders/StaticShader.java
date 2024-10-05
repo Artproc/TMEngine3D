@@ -7,16 +7,21 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import toolbox.Maths;
 
+import java.util.List;
+
 public class StaticShader extends ShaderProgram
 {
+    private static final int MAX_LIGHT = 4;
+
     private static final String VERTEX_FILE = "res/shaders/vertexShader.glsl";
     private static final String FRAGMENT_FILE = "res/shaders/fragmentShader.glsl";
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;
     private int location_viewMatrix;
-    private int location_lightPosition;
-    private int location_lightColour;
+    private int location_lightPosition[];
+    private int location_lightColour[];
+    private int location_attenuation[];
     private int location_shineDamper;
     private int location_reflectivity;
     private int location_useFakeLighting;
@@ -43,14 +48,22 @@ public class StaticShader extends ShaderProgram
         location_transformationMatrix = super.getUniformLocation("transformationMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
-        location_lightPosition = super.getUniformLocation("lightPosition");
-        location_lightColour = super.getUniformLocation("lightColour");
         location_shineDamper = super.getUniformLocation("shineDamper");
         location_reflectivity = super.getUniformLocation("reflectivity");
         location_useFakeLighting = super.getUniformLocation("useFakeLighting");
         location_skyColour = super.getUniformLocation("skyColour");
         location_numberOfRows = super.getUniformLocation("numberOfRows");
         location_offset = super.getUniformLocation("offset");
+
+        location_lightPosition = new int[MAX_LIGHT];
+        location_lightColour = new int[MAX_LIGHT];
+        location_attenuation = new int[MAX_LIGHT];
+        for(int i = 0; i < MAX_LIGHT; i++)
+        {
+            location_lightPosition[i] = getUniformLocation("lightPosition[" + i + "]");
+            location_lightColour[i] = getUniformLocation("lightColour[" + i + "]");
+            location_attenuation[i] = getUniformLocation("attenuation[" + i + "]");
+        }
     }
 
     public void loadNumberOfRows(int numberOfRows )
@@ -84,10 +97,22 @@ public class StaticShader extends ShaderProgram
         super.loadMatrix(location_transformationMatrix, matrix);
     }
 
-    public void loadLight(Light light)
+    public void loadLights(List<Light> lights)
     {
-        super.loadVector3f(location_lightPosition, light.getPosition());
-        super.loadVector3f(location_lightColour, light.getColour());
+        for(int i = 0; i < MAX_LIGHT; i++)
+        {
+            if(i < lights.size())
+            {
+                super.loadVector3f(location_lightPosition[i], lights.get(i).getPosition());
+                super.loadVector3f(location_lightColour[i], lights.get(i).getColour());
+                super.loadVector3f(location_attenuation[i], lights.get(i).getAttenuation());
+            }
+            else {
+                super.loadVector3f(location_lightPosition[i], new Vector3f(0));
+                super.loadVector3f(location_lightColour[i], new Vector3f(0));
+                super.loadVector3f(location_attenuation[i], new Vector3f(1,0,0));
+            }
+        }
     }
 
     public void loadViewMatrix(Camera camera)

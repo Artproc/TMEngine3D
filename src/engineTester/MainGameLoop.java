@@ -29,8 +29,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class MainGameLoop
 {
-        private static long lastFrameTime;
-        private static float delta;
+    private static long lastFrameTime;
+    private static float delta;
 
 
     public static void main(String[] args)
@@ -61,12 +61,16 @@ public class MainGameLoop
 
         ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("fern"));
         fernTextureAtlas.setNumberOfRows(2);
-        TexturedModel fern = new TexturedModel(OBJLoader.loadObjModel("fern", loader),fernTextureAtlas);
+        TexturedModel fern = new TexturedModel(OBJLoader.loadObjModel("fern", loader), fernTextureAtlas);
 
         TexturedModel bobble = new TexturedModel(OBJLoader.loadObjModel("lowPolyTree", loader),
                 new ModelTexture(loader.loadTexture("lowPolyTree")));
         TexturedModel box = new TexturedModel(OBJLoader.loadObjModel("box", loader),
                 new ModelTexture(loader.loadTexture("box")));
+        TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp", loader),
+                new ModelTexture(loader.loadTexture("lamp")));
+        lamp.getTexture().setUseFakeLighting(true);
+
 
         grass.getTexture().setHasTransparency(true);
         grass.getTexture().setUseFakeLighting(true);
@@ -78,16 +82,15 @@ public class MainGameLoop
 
         List<Entity> entities = new ArrayList<>();
         Random random = new Random();
-        for (int i = 0; i < 400; i++)
-        {
-            if(i % 10 == 0) {
+        for (int i = 0; i < 400; i++) {
+            if (i % 10 == 0) {
                 float x = random.nextFloat() * 800 - 400;
                 float z = random.nextFloat() * -600;
                 float y = terrain.getHeightOfTerrain(x, z);
-                entities.add(new Entity(fern, random.nextInt(4),new Vector3f(x, y,z), 0, random.nextFloat() * 360,
+                entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z), 0, random.nextFloat() * 360,
                         0, 0.9f));
             }
-            if(i% 5 == 0){
+            if (i % 5 == 0) {
                 float x = random.nextFloat() * 800 - 400;
                 float z = random.nextFloat() * -600;
                 float y = terrain.getHeightOfTerrain(x, z);
@@ -101,25 +104,31 @@ public class MainGameLoop
             }
         }
 
-        Light light = new Light(new Vector3f(0, 10000, -10000), new Vector3f(1, 1, 1));
 
+        List<Light> lights = new ArrayList<>();
+        lights.add(new Light(new Vector3f(0, 1000, -7000), new Vector3f(.4f, .4f, .4f)));
+        lights.add(new Light(new Vector3f(185, 10, -293), new Vector3f(2, 0, 0), new Vector3f(1, 0.01f, 0.002f)));
+        lights.add(new Light(new Vector3f(370, 17, -300), new Vector3f(0, 2, 2), new Vector3f(1, 0.01f, 0.002f)));
+        lights.add(new Light(new Vector3f(293, 7, -305), new Vector3f(2, 2, 0), new Vector3f(1, 0.01f, 0.002f)));
 
+        entities.add(new Entity(lamp, new Vector3f(185, -4.7f, -293), 0, 0, 0, 1));
+        entities.add(new Entity(lamp, new Vector3f(370, 4.2f, -300), 0, 0, 0, 1));
+        entities.add(new Entity(lamp, new Vector3f(293, -6.8f, -305), 0, 0, 0, 1));
 
-
-        MasterRenderer renderer = new MasterRenderer();
+        MasterRenderer renderer = new MasterRenderer(loader);
 
         RawModel bunnyModel = OBJLoader.loadObjModel("person", loader);
         TexturedModel bunny = new TexturedModel(bunnyModel, new ModelTexture(loader.loadTexture("playerTexture")));
 
         Entity boxEntity = new Entity(box, new Vector3f(225.5f, 5, -352.6f), 0f, 25f, 0f, 5f);
 
-        Player player = new Player(bunny, new Vector3f(100,5,-150),0,180,0,0.6f);
+        Player player = new Player(bunny, new Vector3f(100, 5, -150), 0, 180, 0, 0.6f);
         Camera camera = new Camera(player);
 
         List<GuiTexture> guis = new ArrayList<>();
         GuiTexture gui = new GuiTexture(loader.loadTexture("socuwan"), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-        guis.add(gui);
-        GuiTexture gui2 = new GuiTexture(loader.loadTexture("thinmatrix"), new Vector2f(0.3f, 0.74f), new Vector2f(0.4f, 0.4f));
+        //guis.add(gui);
+        GuiTexture gui2 = new GuiTexture(loader.loadTexture("health"), new Vector2f(-.68f, .9f), new Vector2f(0.3f, 0.3f));
         guis.add(gui2);
 
         GuiRenderer guiRenderer = new GuiRenderer(loader);
@@ -138,13 +147,13 @@ public class MainGameLoop
                 renderer.processEntity(entity);
             }
 
-            renderer.render(light, camera);
+            renderer.render(lights, camera);
             guiRenderer.render(guis);
 
             glfwSwapBuffers(glfwWindow);
             MouseListener.endFrame();
             long currentFrameTime = System.currentTimeMillis();
-            delta = (currentFrameTime - lastFrameTime)/1000f;
+            delta = (currentFrameTime - lastFrameTime) / 1000f;
             lastFrameTime = currentFrameTime;
         }
         guiRenderer.cleanup();
@@ -152,6 +161,7 @@ public class MainGameLoop
         loader.cleanUp();
         glfwTerminate();
     }
+
     public static float getFrameTimeSeconds()
     {
         return delta;
